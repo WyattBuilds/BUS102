@@ -1,35 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "./supabase";
+import TaskList from "./task-list";
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-
-type Session = { email: string; accessToken: string };
 type Mode = "idle" | "signup" | "login";
 
-// Talks to Supabase's sign-in service directly with fetch, so no extra
-// packages are needed.
-async function authRequest(path: string, body: object) {
-  const res = await fetch(`${SUPABASE_URL}/auth/v1/${path}`, {
-    method: "POST",
-    headers: { apikey: SUPABASE_KEY ?? "", "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    throw new Error(data.msg || data.error_description || data.message || "Something went wrong.");
-  }
-  return data;
-}
-
 export default function AuthPanel() {
-  const [session, setSession] = useState<Session | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState<Mode>("idle");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+
+  // Pick up a saved sign-in when the page loads, and follow any later changes.
+  useEffect(() => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
+    supabase.auth.getSession().then(({ data }) => {
+      setUserEmail(data.session?.user.email ?? null);
+      setLoading(false);
+    });
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUserEmail(session?.user.email ?? null);
+    });
+    return () => data.subscription.unsubscribe();
+  }, []);
 
   function openForm(next: Mode) {
     setMode(next);
@@ -40,53 +40,45 @@ export default function AuthPanel() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    if (!SUPABASE_URL || !SUPABASE_KEY) {
+    if (!supabase) {
       setError("Sign-in is not set up on this deployment.");
       return;
     }
     setBusy(true);
-    try {
-      const data =
-        mode === "signup"
-          ? await authRequest("signup", { email, password })
-          : await authRequest("token?grant_type=password", { email, password });
-      if (!data.access_token) {
-        throw new Error("Account created, but sign-in did not start. Try Log in.");
-      }
-      setSession({ email: data.user?.email ?? email, accessToken: data.access_token });
-      setMode("idle");
-      setPassword("");
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Something went wrong.";
-      setError(mode === "login" ? "Wrong email or password." : message);
-    } finally {
-      setBusy(false);
+    if (mode === "signup") {
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      if (error) setError(error.message);
+      else if (!data.session) setError("Account created, but sign-in did not start. Try Log in.");
+      else openForm("idle");
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) setError("Wrong email or password.");
+      else openForm("idle");
     }
+    setBusy(false);
   }
 
   async function handleSignOut() {
-    if (session) {
-      // Best effort: tell Supabase to end the session, then clear it here either way.
-      await fetch(`${SUPABASE_URL}/auth/v1/logout`, {
-        method: "POST",
-        headers: { apikey: SUPABASE_KEY ?? "", Authorization: `Bearer ${session.accessToken}` },
-      }).catch(() => {});
-    }
-    setSession(null);
+    await supabase?.auth.signOut();
     setEmail("");
     openForm("idle");
   }
 
-  if (session) {
+  if (loading) return null;
+
+  if (userEmail) {
     return (
-      <div className="auth">
-        <p className="auth-status">
-          Signed in as <strong>{session.email}</strong>
-        </p>
-        <button type="button" onClick={handleSignOut}>
-          Sign out
-        </button>
-      </div>
+      <>
+        <div className="auth">
+          <p className="auth-status">
+            Signed in as <strong>{userEmail}</strong>
+          </p>
+          <button type="button" onClick={handleSignOut}>
+            Sign out
+          </button>
+        </div>
+        <TaskList />
+      </>
     );
   }
 
