@@ -1,10 +1,13 @@
 # Project state
-Last updated: 2026-10-08
+Last updated: 2026-10-13
 
 ## Works
 - The Next.js site is live on Vercel and deploys from the main branch.
 - Every pull request gets a Vercel preview link.
 - A Supabase project exists for BUS102.
+- On the live site, a person can create an account with an email and password, and the page then shows "Signed in as" with their email.
+- A person can sign out, then log back in with the same email and password.
+- If a person logs in with the wrong password, an error message appears and they stay logged out.
 
 ## Broken or flaky
 - Nothing known broken. No app features are built yet.
