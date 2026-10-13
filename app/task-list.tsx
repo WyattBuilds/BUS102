@@ -56,8 +56,28 @@ export default function TaskList() {
     }
   }
 
+  // Count completed tasks per skill. The lowest count (or counts, if tied)
+  // is the skill being avoided.
+  const counts = SKILLS.map((s) => ({
+    skill: s,
+    count: tasks.filter((t) => t.done && t.skill === s).length,
+  }));
+  const lowest = Math.min(...counts.map((c) => c.count));
+
   return (
     <section className="tasks">
+      <h2>Skill summary</h2>
+      <ul className="skill-summary">
+        {counts.map((c) => (
+          <li key={c.skill}>
+            <span>
+              {c.skill} {c.count}
+            </span>
+            {c.count === lowest && <span className="avoiding">Avoiding</span>}
+          </li>
+        ))}
+      </ul>
+
       <h2>Study tasks</h2>
       <form className="task-form" onSubmit={handleAdd}>
         <input
