@@ -9,7 +9,6 @@
 - npm install
 - npm run dev
 - npm run build
-- npm run lint
 These assume npm. If package.json shows a different package manager or script names, use those and tell Wyatt so this section gets corrected.
 
 ## Never
@@ -21,13 +20,14 @@ These assume npm. If package.json shows a different package manager or script na
 - Put keys, passwords, or connection strings in any file, commit, or message. They live only in Vercel > bus102 > Settings > Environment Variables.
 - Use real personal data. Fake names and fake content only.
 - Merge a pull request. Wyatt merges.
-- Edit roadmap.md, project-state.md, or CLAUDE.md during feature work. Only a dedicated docs session edits them.
+- Edit CLAUDE.md during feature work. Only a dedicated docs session edits it.
 
 ## Conventions
 - One slice per pull request, opened as a draft.
 - Explain every change in plain language in the pull request description, written for someone with no coding background.
 - Flag anything Wyatt would need to explain if asked about it at a live session.
 - Keep code in TypeScript and styles in plain CSS.
+- Before opening a pull request, update roadmap.md and project-state.md to match the work in it.
 
 ## Current focus
 See roadmap.md. Work only on the slice marked ACTIVE.

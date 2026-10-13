@@ -14,8 +14,7 @@ Last updated: 2026-10-13
 - Each account sees only its own tasks.
 
 ## Broken or flaky
-- Nothing known broken. No app features are built yet.
-- Not yet confirmed: whether the Supabase URL and public key are set in Vercel environment variables. The site does not use Supabase yet.
+- Nothing known broken.
 
 ## Environment notes
 - Repo: WyattBuilds/BUS102, default branch main.
@@ -25,6 +24,4 @@ Last updated: 2026-10-13
 - Keys and passwords live only in Vercel > bus102 > Settings > Environment Variables.
 
 ## Next session
-- Start slice 1: sign up and log in.
-- Open question: turn off "Confirm email" in Supabase so fake test emails can sign in? Recommended yes, since the app uses only fake data. Wyatt decides.
-- Open question: confirm the production URL above.
+- Start slice 3: skill summary.
