@@ -1,7 +1,11 @@
+import AuthPanel from "./auth-panel";
+
 export default function Home() {
   return (
     <>
       <main>
+        <AuthPanel />
+
         <header className="hero">
           <h1>Wyatt Hoffman</h1>
           <p className="tagline">
