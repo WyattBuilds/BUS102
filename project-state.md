@@ -8,6 +8,10 @@ Last updated: 2026-10-13
 - On the live site, a person can create an account with an email and password, and the page then shows "Signed in as" with their email.
 - A person can sign out, then log back in with the same email and password.
 - If a person logs in with the wrong password, an error message appears and they stay logged out.
+- A signed-in person can add a study task, tag it Reading, Writing, Listening, or Speaking, and see it in their list with that label.
+- A person can tick a task to mark it done, and it stays done after they reload the page.
+- A person stays signed in when they reload the page, and their tasks are still there after they sign out and log back in.
+- Each account sees only its own tasks.
 
 ## Broken or flaky
 - Nothing known broken. No app features are built yet.
