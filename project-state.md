@@ -12,6 +12,8 @@ Last updated: 2026-10-13
 - A person can tick a task to mark it done, and it stays done after they reload the page.
 - A person stays signed in when they reload the page, and their tasks are still there after they sign out and log back in.
 - Each account sees only its own tasks.
+- A skill summary shows how many completed tasks a person has for each skill, and labels the lowest one (or ones, if tied) "Avoiding."
+- The summary updates straight away when a task is ticked or unticked, and each account sees only its own counts.
 
 ## Broken or flaky
 - Nothing known broken.
@@ -24,4 +26,4 @@ Last updated: 2026-10-13
 - Keys and passwords live only in Vercel > bus102 > Settings > Environment Variables.
 
 ## Next session
-- Start slice 3: skill summary.
+- All three slices are built. Choose what to build next from the Backlog in roadmap.md.
