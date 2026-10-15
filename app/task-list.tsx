@@ -3,11 +3,15 @@
 import { useEffect, useState } from "react";
 import { supabase } from "./supabase";
 
-const SKILLS = ["Reading", "Writing", "Listening", "Speaking"] as const;
+type Task = {
+  id: string;
+  title: string;
+  class_name: string | null;
+  done: boolean;
+  due_date: string | null;
+};
 
-type Task = { id: string; title: string; skill: string; done: boolean; due_date: string | null };
-
-const FIELDS = "id, title, skill, done, due_date";
+const FIELDS = "id, title, class_name, done, due_date";
 
 // Today's date as YYYY-MM-DD in the person's own time zone, so it can be
 // compared directly with a due date.
@@ -27,7 +31,7 @@ function formatDue(due: string) {
 export default function TaskList() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [title, setTitle] = useState("");
-  const [skill, setSkill] = useState<string>(SKILLS[0]);
+  const [className, setClassName] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [error, setError] = useState("");
 
@@ -46,11 +50,11 @@ export default function TaskList() {
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault();
-    if (!supabase || !title.trim()) return;
+    if (!supabase || !title.trim() || !className.trim()) return;
     setError("");
     const { data, error } = await supabase
       .from("tasks")
-      .insert({ title: title.trim(), skill, due_date: dueDate || null })
+      .insert({ title: title.trim(), class_name: className.trim(), due_date: dueDate || null })
       .select(FIELDS)
       .single();
     if (error) setError(error.message);
@@ -75,45 +79,64 @@ export default function TaskList() {
     }
   }
 
-  // Count completed tasks per skill. The lowest count (or counts, if tied)
-  // is the skill being avoided.
-  const counts = SKILLS.map((s) => ({
-    skill: s,
-    count: tasks.filter((t) => t.done && t.skill === s).length,
+  // Every class the person has used, in alphabetical order. Tasks saved
+  // before classes existed have no class and are left out.
+  const classNames = [
+    ...new Set(tasks.map((t) => t.class_name).filter((c): c is string => !!c)),
+  ].sort();
+
+  // Count unfinished tasks per class. The class with the most (or classes,
+  // if tied) is "Behind". A class with nothing left to do is never Behind.
+  const counts = classNames.map((c) => ({
+    className: c,
+    count: tasks.filter((t) => !t.done && t.class_name === c).length,
   }));
-  const lowest = Math.min(...counts.map((c) => c.count));
+  const most = Math.max(0, ...counts.map((c) => c.count));
 
   const today = todayString();
 
   return (
     <section className="tasks">
-      <h2>Skill summary</h2>
-      <ul className="skill-summary">
-        {counts.map((c) => (
-          <li key={c.skill}>
-            <span>
-              {c.skill} {c.count}
-            </span>
-            {c.count === lowest && <span className="avoiding">Avoiding</span>}
-          </li>
-        ))}
-      </ul>
+      <h2>Unfinished by class</h2>
+      {counts.length === 0 ? (
+        <p className="summary-empty">Add a task with a class to see your summary.</p>
+      ) : (
+        <ul className="class-summary">
+          {counts.map((c) => (
+            <li key={c.className}>
+              <span>
+                {c.className} {c.count}
+              </span>
+              {most > 0 && c.count === most && <span className="behind">Behind</span>}
+            </li>
+          ))}
+        </ul>
+      )}
 
       <h2>Study tasks</h2>
       <form className="task-form" onSubmit={handleAdd}>
         <input
           type="text"
           required
-          placeholder="What will you practice?"
+          placeholder="What do you need to do?"
           aria-label="Task"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <select aria-label="Skill" value={skill} onChange={(e) => setSkill(e.target.value)}>
-          {SKILLS.map((s) => (
-            <option key={s}>{s}</option>
+        <input
+          type="text"
+          required
+          placeholder="Class, e.g. BUS102"
+          aria-label="Class"
+          list="class-names"
+          value={className}
+          onChange={(e) => setClassName(e.target.value)}
+        />
+        <datalist id="class-names">
+          {classNames.map((c) => (
+            <option key={c} value={c} />
           ))}
-        </select>
+        </datalist>
         <input
           type="date"
           aria-label="Due date"
@@ -132,9 +155,9 @@ export default function TaskList() {
       <ul className="task-list">
         {tasks.map((task) => {
           const overdue = !task.done && task.due_date !== null && task.due_date < today;
-          const classes = [task.done && "done", overdue && "overdue"].filter(Boolean).join(" ");
+          const rowClass = [task.done && "done", overdue && "overdue"].filter(Boolean).join(" ");
           return (
-            <li key={task.id} className={classes || undefined}>
+            <li key={task.id} className={rowClass || undefined}>
               <label>
                 <input type="checkbox" checked={task.done} onChange={() => handleToggle(task)} />
                 <span className="task-title">{task.title}</span>
@@ -146,7 +169,7 @@ export default function TaskList() {
                     {overdue && <strong> Overdue</strong>}
                   </span>
                 )}
-                <span className="skill-label">{task.skill}</span>
+                {task.class_name && <span className="class-label">{task.class_name}</span>}
               </span>
             </li>
           );

@@ -231,7 +231,7 @@ footer p {
   color: var(--muted);
 }
 
-.skill-label {
+.class-label {
   font-size: 0.85rem;
   padding: 0.1rem 0.6rem;
   border-radius: 999px;
@@ -240,7 +240,7 @@ footer p {
   white-space: nowrap;
 }
 
-.skill-summary {
+.class-summary {
   list-style: none;
   padding: 0;
   margin-bottom: 1.5rem;
@@ -249,7 +249,7 @@ footer p {
   gap: 0.5rem;
 }
 
-.skill-summary li {
+.class-summary li {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
@@ -259,7 +259,7 @@ footer p {
   border-radius: 6px;
 }
 
-.avoiding {
+.behind {
   align-self: flex-start;
   font-size: 0.8rem;
   padding: 0.05rem 0.5rem;
@@ -285,4 +285,8 @@ footer p {
 .task-list li.overdue .task-title,
 .task-list li.overdue .due-date {
   color: #b00020;
+}
+
+.summary-empty {
+  color: var(--muted);
 }
