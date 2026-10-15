@@ -1,5 +1,5 @@
 # Project state
-Last updated: 2026-10-13
+Last updated: 2026-10-15
 
 ## Works
 - The Next.js site is live on Vercel and deploys from the main branch.
@@ -21,9 +21,9 @@ Last updated: 2026-10-13
 ## Environment notes
 - Repo: WyattBuilds/BUS102, default branch main.
 - Vercel project: bus102.
-- Live site as recorded: https://bus102-l6u8kylm5-wyatt-8742.vercel.app. This may be one deployment's link rather than the production domain; confirm in Vercel > bus102 > Settings > Domains.
+- Live site: https://bus102.vercel.app. The Vercel project was connected to this GitHub repo on 2026-10-15; before that, merges did not reach the live site.
 - Supabase project URL: https://genzjutbvaiskwfmrbka.supabase.co
 - Keys and passwords live only in Vercel > bus102 > Settings > Environment Variables.
 
 ## Next session
-- All three slices are built. Choose what to build next from the Backlog in roadmap.md.
+- The app changed from a language study list to a per-class study to-do list. Start slice 4: due dates. The Oct 18 class deliverable needs a working Vercel link with login, saved tasks, due dates and visible completion.
