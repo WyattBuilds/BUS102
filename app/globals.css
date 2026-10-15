@@ -267,3 +267,22 @@ footer p {
   background: #fdecea;
   color: #b00020;
 }
+
+.task-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.due-date {
+  font-size: 0.85rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.task-list li.overdue .task-title,
+.task-list li.overdue .due-date {
+  color: #b00020;
+}
