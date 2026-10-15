@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Wyatt Hoffman",
-  description: "a freshman at UH Manoa studying entreprenuership",
+  title: "BUS102 study list",
+  description: "A study to-do list for your classes, with due dates.",
 };
 
 export default function RootLayout({

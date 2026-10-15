@@ -16,6 +16,7 @@ Last updated: 2026-10-15
 - The summary updates straight away when a task is ticked or unticked, and each account sees only its own counts.
 - A person can give a task a due date, or leave it blank. The date shows next to the task and stays after a reload.
 - An unfinished task whose due date has passed shows in red with the word Overdue. Tasks due today or later, tasks with no due date, and finished tasks are not marked Overdue.
+- The site uses a dark theme in the style of the Obsidian notes app: dark charcoal background, light grey text, purple buttons and links. The home page shows only the app; the old bio is gone.
 
 ## Broken or flaky
 - Nothing known broken.
@@ -29,4 +30,4 @@ Last updated: 2026-10-15
 - Keys and passwords live only in Vercel > bus102 > Settings > Environment Variables.
 
 ## Next session
-- The app is now a per-class study to-do list with due dates. Start slice 6: Obsidian theme, which also removes the bio. The Oct 18 class deliverable needs a working Vercel link with login, saved tasks, due dates and visible completion.
+- All six slices are built, and the site matches What Done means in roadmap.md. The Oct 18 class deliverable is the live link: https://bus102.vercel.app. Anything further comes from the Backlog.
