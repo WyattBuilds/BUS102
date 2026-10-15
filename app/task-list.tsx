@@ -5,12 +5,30 @@ import { supabase } from "./supabase";
 
 const SKILLS = ["Reading", "Writing", "Listening", "Speaking"] as const;
 
-type Task = { id: string; title: string; skill: string; done: boolean };
+type Task = { id: string; title: string; skill: string; done: boolean; due_date: string | null };
+
+const FIELDS = "id, title, skill, done, due_date";
+
+// Today's date as YYYY-MM-DD in the person's own time zone, so it can be
+// compared directly with a due date.
+function todayString() {
+  const d = new Date();
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+// Show "Oct 17" for "2026-10-17". Built from the parts so the date never
+// shifts by a day because of time zones.
+function formatDue(due: string) {
+  const [y, m, d] = due.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
 
 export default function TaskList() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [title, setTitle] = useState("");
   const [skill, setSkill] = useState<string>(SKILLS[0]);
+  const [dueDate, setDueDate] = useState("");
   const [error, setError] = useState("");
 
   // Load this account's tasks. The database only returns rows the signed-in
@@ -18,7 +36,7 @@ export default function TaskList() {
   useEffect(() => {
     supabase
       ?.from("tasks")
-      .select("id, title, skill, done")
+      .select(FIELDS)
       .order("created_at")
       .then(({ data, error }) => {
         if (error) setError(error.message);
@@ -32,13 +50,14 @@ export default function TaskList() {
     setError("");
     const { data, error } = await supabase
       .from("tasks")
-      .insert({ title: title.trim(), skill })
-      .select("id, title, skill, done")
+      .insert({ title: title.trim(), skill, due_date: dueDate || null })
+      .select(FIELDS)
       .single();
     if (error) setError(error.message);
     else {
       setTasks((current) => [...current, data]);
       setTitle("");
+      setDueDate("");
     }
   }
 
@@ -63,6 +82,8 @@ export default function TaskList() {
     count: tasks.filter((t) => t.done && t.skill === s).length,
   }));
   const lowest = Math.min(...counts.map((c) => c.count));
+
+  const today = todayString();
 
   return (
     <section className="tasks">
@@ -93,6 +114,12 @@ export default function TaskList() {
             <option key={s}>{s}</option>
           ))}
         </select>
+        <input
+          type="date"
+          aria-label="Due date"
+          value={dueDate}
+          onChange={(e) => setDueDate(e.target.value)}
+        />
         <button type="submit">Add</button>
       </form>
 
@@ -103,15 +130,27 @@ export default function TaskList() {
       )}
 
       <ul className="task-list">
-        {tasks.map((task) => (
-          <li key={task.id} className={task.done ? "done" : undefined}>
-            <label>
-              <input type="checkbox" checked={task.done} onChange={() => handleToggle(task)} />
-              <span className="task-title">{task.title}</span>
-            </label>
-            <span className="skill-label">{task.skill}</span>
-          </li>
-        ))}
+        {tasks.map((task) => {
+          const overdue = !task.done && task.due_date !== null && task.due_date < today;
+          const classes = [task.done && "done", overdue && "overdue"].filter(Boolean).join(" ");
+          return (
+            <li key={task.id} className={classes || undefined}>
+              <label>
+                <input type="checkbox" checked={task.done} onChange={() => handleToggle(task)} />
+                <span className="task-title">{task.title}</span>
+              </label>
+              <span className="task-meta">
+                {task.due_date && (
+                  <span className="due-date">
+                    Due {formatDue(task.due_date)}
+                    {overdue && <strong> Overdue</strong>}
+                  </span>
+                )}
+                <span className="skill-label">{task.skill}</span>
+              </span>
+            </li>
+          );
+        })}
       </ul>
     </section>
   );

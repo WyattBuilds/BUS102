@@ -14,6 +14,8 @@ Last updated: 2026-10-15
 - Each account sees only its own tasks.
 - A skill summary shows how many completed tasks a person has for each skill, and labels the lowest one (or ones, if tied) "Avoiding."
 - The summary updates straight away when a task is ticked or unticked, and each account sees only its own counts.
+- A person can give a task a due date, or leave it blank. The date shows next to the task and stays after a reload.
+- An unfinished task whose due date has passed shows in red with the word Overdue. Tasks due today or later, tasks with no due date, and finished tasks are not marked Overdue.
 
 ## Broken or flaky
 - Nothing known broken.
@@ -26,4 +28,4 @@ Last updated: 2026-10-15
 - Keys and passwords live only in Vercel > bus102 > Settings > Environment Variables.
 
 ## Next session
-- The app changed from a language study list to a per-class study to-do list. Start slice 4: due dates. The Oct 18 class deliverable needs a working Vercel link with login, saved tasks, due dates and visible completion.
+- The app changed from a language study list to a per-class study to-do list. Slice 4 (due dates) is built. Start slice 5: classes instead of skills. The Oct 18 class deliverable needs a working Vercel link with login, saved tasks, due dates and visible completion.
