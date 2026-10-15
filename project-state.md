@@ -8,17 +8,18 @@ Last updated: 2026-10-15
 - On the live site, a person can create an account with an email and password, and the page then shows "Signed in as" with their email.
 - A person can sign out, then log back in with the same email and password.
 - If a person logs in with the wrong password, an error message appears and they stay logged out.
-- A signed-in person can add a study task, tag it Reading, Writing, Listening, or Speaking, and see it in their list with that label.
+- A signed-in person can add a task with a class name, such as BUS102, and see it in their list with that class label. Typing in the class box suggests classes they have already used.
 - A person can tick a task to mark it done, and it stays done after they reload the page.
 - A person stays signed in when they reload the page, and their tasks are still there after they sign out and log back in.
 - Each account sees only its own tasks.
-- A skill summary shows how many completed tasks a person has for each skill, and labels the lowest one (or ones, if tied) "Avoiding."
+- A summary shows how many unfinished tasks each class has, and labels the class with the most (or classes, if tied) "Behind." A class with no unfinished tasks is never Behind.
 - The summary updates straight away when a task is ticked or unticked, and each account sees only its own counts.
 - A person can give a task a due date, or leave it blank. The date shows next to the task and stays after a reload.
 - An unfinished task whose due date has passed shows in red with the word Overdue. Tasks due today or later, tasks with no due date, and finished tasks are not marked Overdue.
 
 ## Broken or flaky
 - Nothing known broken.
+- Tasks saved before slice 5 have no class. They still show in the list, without a class label, and are left out of the summary.
 
 ## Environment notes
 - Repo: WyattBuilds/BUS102, default branch main.
@@ -28,4 +29,4 @@ Last updated: 2026-10-15
 - Keys and passwords live only in Vercel > bus102 > Settings > Environment Variables.
 
 ## Next session
-- The app changed from a language study list to a per-class study to-do list. Slice 4 (due dates) is built. Start slice 5: classes instead of skills. The Oct 18 class deliverable needs a working Vercel link with login, saved tasks, due dates and visible completion.
+- The app is now a per-class study to-do list with due dates. Start slice 6: Obsidian theme, which also removes the bio. The Oct 18 class deliverable needs a working Vercel link with login, saved tasks, due dates and visible completion.
